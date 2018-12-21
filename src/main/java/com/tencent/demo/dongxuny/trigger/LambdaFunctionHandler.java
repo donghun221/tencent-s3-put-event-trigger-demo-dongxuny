@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.util.SdkHttpUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -21,13 +20,14 @@ import com.qcloud.cos.region.Region;
 
 public class LambdaFunctionHandler implements RequestHandler<S3Event, String> {
 
+	// Currently, the demo bucket is public read, so we did not define any accessId or secretKey
     private final AmazonS3 s3;
     private final COSClient cos;
     
-    private final String COSSecretId = "AKIDkS4Ys0BjNp6C7ttyLfr2AA2mPvHS2GuO";
-    private final String COSSecretKey = "GRVbmqkXBOQHyVs46ygHsrjR0Unz1sY4";
-    private final String COSBucketName = "dongxuny-1252246555";
-    private final String COSRegion = "ap-chengdu";
+    private final String COSSecretId = "Your SecretID";
+    private final String COSSecretKey = "Your SecretKey";
+    private final String COSBucketName = "Bucket-APPID";
+    private final String COSRegion = "COS Region";
 
     public LambdaFunctionHandler() {
     	// Initialize S3 client, the bucket we want to access is public read
@@ -46,6 +46,8 @@ public class LambdaFunctionHandler implements RequestHandler<S3Event, String> {
 
         //1: Retrieve Bucket and Key from event
         String s3Bucket = event.getRecords().get(0).getS3().getBucket().getName();
+        // Please use url decoded key
+        // otherwise, there will be error thrown
         String s3Key = event.getRecords().get(0).getS3().getObject().getUrlDecodedKey();
         
         try {
